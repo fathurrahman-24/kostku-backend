@@ -128,7 +128,10 @@ router.get("/place/:id", getPlaceById);
  */
 router.post(
   "/place",
-  upload.single("images"), // Changed to match the Swagger schema
+  upload.fields([
+    { name: "image", maxCount: 1 },
+    { name: "images", maxCount: 1 },
+  ]),
   [
     body("name").not().isEmpty().withMessage("name is required"),
     body("description").not().isEmpty().withMessage("description is required"),
@@ -183,7 +186,10 @@ router.post(
  */
 router.put(
   "/place/:id",
-  upload.single("image"),
+  upload.fields([
+    { name: "image", maxCount: 1 },
+    { name: "images", maxCount: 1 },
+  ]),
   [
     body("name")
       .optional()

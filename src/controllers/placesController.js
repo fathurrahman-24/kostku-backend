@@ -1,4 +1,5 @@
 import Place from "../models/placeModel.js";
+import { uploadRemover } from "../utils/uploadRemover.js";
 
 export const getPlace = async (req, res) => {
   try {
@@ -25,7 +26,11 @@ export const getPlaceById = async (req, res) => {
 
 export const createPlace = async (req, res) => {
   const { name, description, googleMapsLink, address, roomPrice, roomStatus } = req.body;
-  const image = req.file ? req.file.filename : null;
+  const file =
+    req.file ||
+    (req.files?.image && req.files.image[0]) ||
+    (req.files?.images && req.files.images[0]);
+  const image = file ? file.filename : null;
 
   try {
     const places = new Place({
@@ -47,7 +52,11 @@ export const createPlace = async (req, res) => {
 export const updatePlace = async (req, res) => {
   const placeId = req.params.id;
   const { name, description, googleMapsLink, address, roomPrice, roomStatus } = req.body;
-  const newImage = req.file ? req.file.filename : null;
+  const file =
+    req.file ||
+    (req.files?.image && req.files.image[0]) ||
+    (req.files?.images && req.files.images[0]);
+  const newImage = file ? file.filename : null;
 
   try {
     const place = await Place.findById(placeId);
@@ -55,7 +64,7 @@ export const updatePlace = async (req, res) => {
     if (!place) {
       return res.status(404).json({ message: "Place not found" });
     }
-    if (newImage) {
+    if (newImage && place.image) {
       uploadRemover(place.image);
     }
 

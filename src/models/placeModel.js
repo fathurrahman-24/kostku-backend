@@ -26,8 +26,8 @@ const placeSchema = new mongoose.Schema({
     default: "available",
   },
   image: {
-    type: [String],
-    default: [],
+    type: String,
+    default: null,
   },
   createdAt: {
     type: Date,
